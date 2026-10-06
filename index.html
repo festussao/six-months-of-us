@@ -1,0 +1,1167 @@
+<!DOCTYPE html><html lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>6 Months of Us — A Digital Scrapbook</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            hand: ['"Caveat"', 'cursive'],
+            reenie: ['"Reenie Beanie"', 'cursive'],
+            kalam: ['"Kalam"', 'cursive'],
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            craft: '#F4EEF7',
+            craftDark: '#E6DAEE',
+            paper: '#FCFAFD',
+            aged: '#F7F2FA',
+            tape: 'rgba(226, 212, 237, 0.78)',
+            tapePink: 'rgba(235, 214, 238, 0.75)',
+            ink: '#26202A',
+            pencil: '#574D5E',
+            sepia: '#7A6B85',
+            roseWood: '#8B6B9E', /* Primary lilac-mauve accent */
+            lilacDark: '#755487',
+            lilacLight: '#F3EBF7',
+            lilacSoft: '#E8DEF0',
+            deepSage: '#586E64',
+          },
+          boxShadow: {
+            paper: '0 4px 22px -2px rgba(78, 55, 96, 0.07), 0 2px 6px -1px rgba(78, 55, 96, 0.04)',
+            polaroid: '0 8px 24px -4px rgba(70, 48, 88, 0.13), 0 2px 6px rgba(0,0,0,0.05)',
+            envelope: '0 12px 30px -6px rgba(70, 48, 88, 0.16)',
+          }
+        }
+      }
+    }
+  </script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;family=Kalam:wght@400;700&amp;family=Playfair+Display:ital,wght@0,500;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;family=Reenie+Beanie&amp;display=swap" rel="stylesheet">
+<style>
+    /* Soft Dreamy Lilac Paper texture & subtle scrapbook patterns */
+    .bg-scrapbook {
+      background-color: #F7F3F9;
+      background-image: radial-gradient(#D8CCE3 1.2px, transparent 1.2px), radial-gradient(#E8DEEE 1.2px, #F7F3F9 1.2px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+    
+    .paper-lines {
+      background-image: repeating-linear-gradient(transparent, transparent 31px, #EBE1F2 31px, #EBE1F2 32px);
+      line-height: 32px;
+    }
+
+    .washi-tape {
+      background: rgba(226, 212, 237, 0.82);
+      backdrop-filter: blur(1px);
+      box-shadow: 0 1px 3px rgba(110, 80, 130, 0.12);
+      position: relative;
+    }
+    .washi-tape::before, .washi-tape::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 6px;
+      background: radial-gradient(circle, transparent 2px, rgba(226, 212, 237, 0.82) 3px);
+      background-size: 6px 6px;
+    }
+    .washi-tape::before { left: -3px; }
+    .washi-tape::after { right: -3px; }
+
+    /* Crossword board: cream card, dark outline, rounded tiles */
+    .cw-board {
+      container-type: inline-size;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 4px;
+      width: 100%;
+      max-width: 480px;
+      padding: 14px;
+      background: #FBF7E9;
+      border: 3px solid #2B2630;
+      border-radius: 20px;
+      box-shadow: 3px 5px 0 #2B2630;
+    }
+    .cw-cell {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      background: #fff;
+      border: 2px solid #9A98A8;
+      border-radius: 7px;
+      box-shadow: inset 0 0 0 2px #F1EFF5;
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 16px;
+      font-size: clamp(11px, 4.6cqw, 22px);
+      color: #26202A;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color .12s ease, border-color .12s ease;
+    }
+    .cw-cell.cw-blank { visibility: hidden; pointer-events: none; }
+    .cw-cell input {
+      width: 100%; height: 100%;
+      padding: 0; margin: 0;
+      border: 0; outline: none; background: transparent;
+      text-align: center; text-transform: uppercase;
+      font: inherit; color: inherit;
+      caret-color: transparent;
+    }
+    .cw-num {
+      position: absolute; top: 1px; left: 3px;
+      font: 600 8px/1 "Plus Jakarta Sans", sans-serif;
+      font-size: clamp(6px, 2.4cqw, 10px);
+      color: #5B5566; pointer-events: none; z-index: 1;
+    }
+    .cw-cell.is-word {
+      background: linear-gradient(145deg, #F9DADF, #EDB5BF);
+      border-color: #B4495F;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.55), 0 1px 0 #8F3447;
+    }
+    .cw-cell.is-active { border-color: #2B2630; }
+    .cw-cell.is-correct { background: #E8DEF0; border-color: #8B6B9E; }
+    .cw-cell.is-wrong { background: #FDE2E2; border-color: #EF4444; }
+    .cw-cell.is-word.is-correct { background: linear-gradient(145deg, #EADCF3, #D6BFE7); border-color: #755487; }
+    .cw-cell.is-word.is-wrong { background: linear-gradient(145deg, #FDDADA, #F7B4B4); border-color: #DC2626; }
+    .cw-cell input::selection { background: transparent; }
+
+    /* Envelope 3D open effect */
+    .envelope-flap {
+      transform-origin: top;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .envelope-open .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+    .envelope-letter {
+      transition: transform 0.4s 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+    }
+    .envelope-open .envelope-letter {
+      transform: translateY(-90px);
+    }
+
+    /* Stamp & doodle aesthetics */
+    .stamp-border {
+      border: 2px dashed #BBA7CC;
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #EFE8F4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBB9D9;
+      border-radius: 9999px;
+    }
+
+    /* Hide scrollbar for tabs navigation */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-scrapbook text-ink font-sans antialiased min-h-screen selection:bg-roseWood selection:text-white">
+<!-- ============================================== -->
+<!-- OPENING COVER SCREEN                          -->
+<!-- ============================================== -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-scrapbook p-4 sm:p-6 md:p-8 transition-all duration-700 opacity-0 pointer-events-none" id="cover-screen" style="display: none;">
+<div class="relative max-w-md w-full bg-paper rounded-2xl p-7 sm:p-10 shadow-2xl border border-purple-100 text-center transform hover:rotate-0 transition-transform -rotate-1">
+<!-- Decorative washi tape -->
+<div class="washi-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-32 h-7 rotate-1 z-10 border border-purple-200/60 opacity-90"></div>
+<!-- Ribbon / Stamp Corner -->
+<div class="absolute -top-3 -right-3 w-16 h-16 pointer-events-none">
+<svg class="w-full h-full text-roseWood/80 fill-current drop-shadow-sm" viewBox="0 0 100 100">
+<circle cx="50" cy="50" fill="#EFE8F6" r="40" stroke="#8B6B9E" stroke-dasharray="3 3" stroke-width="2"></circle>
+<text fill="#8B6B9E" font-family="'Caveat', cursive" font-size="18" font-weight="bold" text-anchor="middle" x="50" y="55">6 MOS</text>
+</svg>
+</div>
+<div class="py-5 sm:py-8 space-y-4">
+<!-- Little hand doodle -->
+<div class="text-roseWood flex justify-center items-center gap-2">
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="font-hand text-xl tracking-wider text-sepia">our story so far</span>
+<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-ink">
+          6 Months of Us
+        </h1>
+<p class="font-hand text-2xl sm:text-3xl text-sepia pt-1">
+          A little something I made for you.
+        </p>
+<p class="text-xs tracking-widest uppercase text-purple-400 font-semibold pt-2">
+          April 7, 2026 — October 6, 2026
+        </p>
+</div>
+<div class="pt-3 sm:pt-4">
+<button class="w-full group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-roseWood hover:bg-lilacDark rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95" id="open-scrapbook-btn">
+<span class="">Open our scrapbook</span>
+<span class="ml-2 font-serif transition-transform group-hover:translate-x-1">→</span>
+</button>
+</div>
+<div class="mt-6 text-purple-400 font-hand text-lg flex items-center justify-center gap-1.5">
+<span class="">Handcrafted with love</span>
+<span class="">•</span>
+<span class="">Made for your phone &amp; tablet</span>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- MAIN APP CONTAINER (Optimized for Mobile/Tablet) -->
+<!-- ============================================== -->
+<div class="max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-6 md:px-8 pt-3 sm:pt-5 pb-24 min-h-screen" id="main-app">
+<!-- Top Sticky Scrapbook Binder / Tab Bar -->
+<header class="sticky top-2 z-40 bg-paper/95 backdrop-blur-md rounded-2xl shadow-paper border border-purple-100/90 p-2 sm:p-3 mb-6 transition-all">
+<div class="flex items-center justify-between px-2 pb-2 border-b border-purple-100">
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-full bg-roseWood inline-block ring-2 ring-purple-200"></span>
+<span class="font-serif font-bold text-sm tracking-wide text-ink">6 Months of Us</span>
+</div>
+<div class="font-hand text-sepia text-lg flex items-center gap-1">
+<span id="page-indicator" class="">Page 2 of 6</span>
+</div>
+</div>
+<!-- Responsive Tabs: Scrollable on mobile, flex-wrap or spacious on tablet -->
+<nav class="flex items-center gap-1.5 md:gap-2 pt-2 overflow-x-auto md:flex-wrap no-scrollbar text-xs font-medium">
+<button class="nav-tab active-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all font-medium bg-craft text-pencil" data-nav="letter" onclick="goToSection('letter')">
+          1. A Not-So-Love Letter
+        </button>
+<button class="nav-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all hover:bg-craftDark hover:text-ink bg-roseWood text-white shadow-sm" data-nav="crossword" onclick="goToSection('crossword')">
+          2. How Well Do You Know Us?
+        </button>
+<button class="nav-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all hover:bg-craftDark hover:text-ink bg-craft text-pencil" data-nav="songs" onclick="goToSection('songs')">
+          3. Songs For You
+        </button>
+<button class="nav-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all hover:bg-craftDark hover:text-ink bg-craft text-pencil" data-nav="things" onclick="goToSection('things')">
+          4. Things I Love About You
+        </button>
+<button class="nav-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all hover:bg-craftDark hover:text-ink bg-craft text-pencil" data-nav="timeline" onclick="goToSection('timeline')">
+          5. Our Timeline
+        </button>
+<button class="nav-tab px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all hover:bg-craftDark hover:text-ink bg-craft text-pencil" data-nav="envelopes" onclick="goToSection('envelopes')">
+          6. Open When...
+        </button>
+</nav>
+</header>
+<!-- CONTENT SECTIONS -->
+<!-- ============================================== -->
+<!-- SECTION 1: A NOT-SO-LOVE LETTER                -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6 hidden" id="section-letter">
+<div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-5 sm:p-8 md:p-10 -rotate-0.5">
+<!-- Washi tape on corners -->
+<div class="washi-tape absolute -top-3 left-6 sm:left-10 w-24 sm:w-28 h-6 -rotate-3 z-10 border border-purple-200/50"></div>
+<div class="washi-tape absolute -top-3 right-6 sm:right-10 w-20 sm:w-24 h-6 rotate-2 z-10 border border-purple-200/50"></div>
+<!-- Header stamp -->
+<div class="flex flex-wrap items-baseline justify-between gap-2 border-b border-purple-100 pb-4 mb-6">
+<div>
+<span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 01</span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">A Not-So-Love Letter</h2>
+</div>
+<div class="font-hand text-lg text-roseWood flex items-center gap-1.5 bg-lilacLight px-3.5 py-1 rounded-full border border-purple-200">
+<svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"></path></svg>
+<span class="">5:54 PM • Oct 6, 2026</span>
+</div>
+</div>
+<!-- Handwritten letter surface with real lined effect -->
+<div class="bg-[#FFFDFE] rounded-xl p-5 sm:p-8 md:p-10 shadow-inner border border-purple-100 relative overflow-hidden">
+<!-- Subtle margin line -->
+<div class="absolute top-0 bottom-0 left-7 sm:left-12 w-[1px] bg-purple-200/80 pointer-events-none"></div>
+<div class="pl-4 sm:pl-8 space-y-6 paper-lines text-stone-800 font-hand text-2xl sm:text-3xl leading-relaxed">
+<p class="">
+              "It’s 5:54 on October 6, 2026, and I can genuinely say I have the best girlfriend in the world.
+            </p>
+<p class="">
+              The past six months of us dating haven’t just been roses and butterflies. Long distance for these past few months has been rough. We spent half of our relationship together and the other half apart from each other, and in this time frame, we’ve made so much progress in our relationship.
+            </p>
+<p class="">
+              Dating back to when we started talking, I wasn’t so sure about a relationship with you, but I want you to know that since day one of our interaction, I’ve always liked you. It evolved into a relationship, but I still feel connected to you as a friend.
+            </p>
+<p class="text-roseWood font-bold">
+              You’re my favourite person in the world.
+            </p>
+<p class="">
+              When I think of you, I think about someone that gets me and someone whose values align with mine, be it religious, moral, or societal."
+            </p>
+</div>
+<!-- Bottom doodle & stamp -->
+<div class="mt-8 pt-4 border-t border-dashed border-purple-200 flex items-center justify-between">
+<div class="font-reenie text-3xl text-sepia rotate-[-2deg]">
+              Yours always, from day one.
+            </div>
+<div class="flex items-center gap-1.5 text-roseWood font-hand text-xl bg-lilacLight/60 px-3 py-1 rounded-full">
+<span class="">💜</span>
+<span class="">6 Months Strong</span>
+</div>
+</div>
+</div>
+<!-- Navigation helper -->
+<div class="mt-8 flex justify-end">
+<button class="inline-flex items-center gap-2 px-5 py-2.5 bg-craftDark/80 hover:bg-craftDark text-ink rounded-xl font-medium transition text-sm" onclick="goToSection('crossword')">
+<span class="">Next: Crossword Puzzle</span>
+<span class="font-serif">→</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 2: HOW WELL DO YOU KNOW US?            -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6" id="section-crossword"><div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-4 sm:p-7 md:p-8">
+  <div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-36 h-6 -rotate-1 z-10 border border-purple-200/50"></div>
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-purple-100 pb-4 mb-6">
+    <div>
+      <span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 02</span>
+      <h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">How Well Do You Know Us?</h2>
+      <p class="font-hand text-xl text-sepia mt-0.5">A mini interactive crossword about us.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="check-answers-btn" onclick="checkCrossword()" class="px-3.5 py-2 bg-roseWood hover:bg-lilacDark text-white text-xs font-semibold rounded-lg shadow-sm transition">
+        Check Answers
+      </button>
+      <button id="reveal-answers-btn" onclick="revealCrossword()" class="px-3.5 py-2 bg-lilacLight hover:bg-craftDark text-ink text-xs font-medium rounded-lg border border-purple-200 transition">
+        Reveal (If Stuck)
+      </button>
+    </div>
+  </div>
+
+  <!-- Completion Banner -->
+  <div id="crossword-success-banner" class="hidden mb-6 p-4 bg-purple-50 border border-purple-300 rounded-xl text-purple-900 flex items-center justify-between gap-3 animate-fade-in">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">🎉</span>
+      <div>
+        <p class="font-bold font-serif text-lg">You actually know us. I'm impressed 😭💜</p>
+        <p class="text-xs text-purple-700">10 out of 10 answers completed perfectly!</p>
+      </div>
+    </div>
+    <button onclick="goToSection('songs')" class="px-4 py-2 bg-roseWood text-white rounded-lg text-xs font-medium hover:bg-lilacDark transition whitespace-nowrap">
+      View Songs →
+    </button>
+  </div>
+
+  <!-- Grid and Clues -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6 items-start">
+    <!-- Crossword Matrix Area -->
+    <div class="md:col-span-7 bg-[#F9F6FC] p-3 sm:p-5 rounded-xl border border-purple-200/80 shadow-inner flex flex-col items-center">
+      <!-- Active Clue Indicator -->
+      <div id="active-clue-bar" class="w-full bg-paper px-3.5 py-2.5 rounded-lg border border-purple-200/70 text-xs sm:text-sm font-medium text-sepia mb-3 flex items-center justify-between shadow-xs">
+        <span id="active-clue-text" class="truncate pr-2">Select a clue or tap any cell</span>
+        <span id="active-dir-badge" class="px-2 py-0.5 rounded text-[11px] font-bold uppercase bg-lilacSoft text-roseWood flex-shrink-0">ACROSS</span>
+      </div>
+
+      <!-- Matrix Container -->
+      <div class="w-full overflow-x-auto flex justify-center py-1">
+        <div id="crossword-board" class="cw-board">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between w-full max-w-[480px] mt-3 text-[11px] text-pencil font-hand text-base">
+        <span class="">* Multi-word answers omit spaces</span>
+        <span class="">Tap active cell to toggle direction</span>
+      </div>
+    </div>
+
+    <!-- Clues Columns -->
+    <div class="md:col-span-5 space-y-4">
+      <!-- Across -->
+      <div class="bg-paper p-4 rounded-xl border border-purple-100 shadow-sm">
+        <h3 class="font-serif font-bold text-sm tracking-wide text-roseWood uppercase border-b border-purple-100 pb-1 mb-2.5 flex items-center justify-between">
+          <span class="">Across</span>
+          <span class="text-[11px] text-purple-400 font-normal">Horizontal</span>
+        </h3>
+        <ul id="across-clues-list" class="space-y-1.5 text-xs sm:text-sm"></ul>
+      </div>
+
+      <!-- Down -->
+      <div class="bg-paper p-4 rounded-xl border border-purple-100 shadow-sm">
+        <h3 class="font-serif font-bold text-sm tracking-wide text-sepia uppercase border-b border-purple-100 pb-1 mb-2.5 flex items-center justify-between">
+          <span class="">Down</span>
+          <span class="text-[11px] text-purple-400 font-normal">Vertical</span>
+        </h3>
+        <ul id="down-clues-list" class="space-y-1.5 text-xs sm:text-sm"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Footer Navigation -->
+  <div class="mt-8 flex justify-between items-center border-t border-purple-100 pt-4">
+    <button onclick="goToSection('letter')" class="text-xs sm:text-sm font-medium text-pencil hover:text-ink">
+      ← Back to Letter
+    </button>
+    <button onclick="goToSection('songs')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-craftDark/80 hover:bg-craftDark text-ink rounded-xl font-medium transition text-sm">
+      <span class="">Next: Songs That Remind Me of You</span>
+      <span class="font-serif">→</span>
+    </button>
+  </div>
+</div>
+
+<script>
+(function() {
+  // Crossword layout: 12 x 12, 10 intersecting answers
+  const cluesData = [
+    { num: 1,  dir: 'down',   row: 0,  col: 0,  answer: 'WALKS',       clue: "What we do the most" },
+    { num: 2,  dir: 'down',   row: 0,  col: 8,  answer: 'BEAUTIFUL',   clue: "One word I'd use to describe you" },
+    { num: 3,  dir: 'down',   row: 1,  col: 2,  answer: 'SUDOKU',      clue: "A game we play together" },
+    { num: 4,  dir: 'down',   row: 1,  col: 4,  answer: 'NORTHWEST',   clue: "Best Nepo baby itw" },
+    { num: 5,  dir: 'across', row: 1,  col: 6,  answer: 'ELEVEN',      clue: "How many months we've known each other" },
+    { num: 6,  dir: 'down',   row: 3,  col: 6,  answer: 'NECKLACES',   clue: "Something I always get you for occasions" },
+    { num: 7,  dir: 'down',   row: 3,  col: 10, answer: 'FEBRUARY',    clue: "The month we had our first kiss" },
+    { num: 8,  dir: 'across', row: 4,  col: 0,  answer: 'SPORTCENTRE', clue: "Where we met", hint: '5,6' },
+    { num: 9,  dir: 'across', row: 9,  col: 2,  answer: 'CAT',         clue: "Best animal in the world" },
+    { num: 10, dir: 'across', row: 10, col: 5,  answer: 'ZENDAYA',     clue: "Your definition of a perfect woman" }
+  ];
+
+  const SIZE = 12;
+  const matrix = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
+  cluesData.forEach(item => {
+    for (let i = 0; i < item.answer.length; i++) {
+      const r = item.dir === 'across' ? item.row : item.row + i;
+      const c = item.dir === 'across' ? item.col + i : item.col;
+      const cell = matrix[r][c] || (matrix[r][c] = { char: item.answer[i], num: null, across: null, down: null });
+      if (i === 0) cell.num = item.num;
+      cell[item.dir] = item;
+    }
+  });
+
+  let curR = 0, curC = 0, curDir = 'down';
+  const inputAt = (r, c) => document.querySelector('input[data-r="' + r + '"][data-c="' + c + '"]');
+
+  function selectCell(r, c, focus) {
+    const data = matrix[r] && matrix[r][c];
+    if (!data) return;
+    curR = r; curC = c;
+    if (!data[curDir]) curDir = data.across ? 'across' : 'down';
+    highlightWord();
+    if (focus) { const inp = inputAt(r, c); if (inp) { inp.focus({ preventScroll: true }); inp.select(); } }
+  }
+
+  function stepNext(delta) {
+    const nr = curDir === 'down' ? curR + delta : curR;
+    const nc = curDir === 'across' ? curC + delta : curC;
+    const data = matrix[nr] && matrix[nr][nc];
+    if (data && data[curDir]) selectCell(nr, nc, true);
+  }
+
+  function clearMarks(cellEl) { cellEl.classList.remove('is-correct', 'is-wrong'); }
+
+  function renderPuzzle() {
+    const board = document.getElementById('crossword-board');
+    const acrossUl = document.getElementById('across-clues-list');
+    const downUl = document.getElementById('down-clues-list');
+    if (!board || !acrossUl || !downUl) return;
+    board.innerHTML = ''; acrossUl.innerHTML = ''; downUl.innerHTML = '';
+
+    cluesData.forEach(item => {
+      const li = document.createElement('li');
+      li.id = 'clue-' + item.num + '-' + item.dir;
+      li.className = 'p-1.5 rounded transition cursor-pointer hover:bg-purple-50 flex items-baseline gap-2';
+      li.innerHTML = '<span class="font-bold font-mono text-roseWood text-xs bg-purple-100 px-1.5 py-0.5 rounded">' + item.num +
+        '</span> <span class="text-pencil leading-tight">' + item.clue +
+        ' <span class="text-purple-400 text-[11px]">(' + (item.hint || item.answer.length) + ')</span></span>';
+      li.onclick = () => { curDir = item.dir; selectCell(item.row, item.col, true); };
+      (item.dir === 'across' ? acrossUl : downUl).appendChild(li);
+    });
+
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        const data = matrix[r][c];
+        const cell = document.createElement('div');
+        if (!data) { cell.className = 'cw-cell cw-blank'; board.appendChild(cell); continue; }
+
+        cell.className = 'cw-cell';
+        cell.dataset.r = r; cell.dataset.c = c;
+        if (data.num) {
+          const badge = document.createElement('span');
+          badge.className = 'cw-num';
+          badge.textContent = data.num;
+          cell.appendChild(badge);
+        }
+        const inp = document.createElement('input');
+        inp.type = 'text'; inp.maxLength = 1;
+        inp.autocomplete = 'off'; inp.autocapitalize = 'characters'; inp.spellcheck = false;
+        inp.setAttribute('aria-label', 'Row ' + (r + 1) + ', column ' + (c + 1));
+        inp.dataset.answer = data.char; inp.dataset.r = r; inp.dataset.c = c;
+
+        inp.addEventListener('focus', () => { if (curR !== r || curC !== c) selectCell(r, c); });
+        inp.addEventListener('click', e => {
+          e.stopPropagation();
+          if (curR === r && curC === c && data.across && data.down) {
+            curDir = curDir === 'across' ? 'down' : 'across';
+            highlightWord();
+          } else { selectCell(r, c); }
+          inp.select();
+        });
+        inp.addEventListener('input', e => {
+          const v = e.target.value.replace(/[^A-Za-z]/g, '');
+          e.target.value = v ? v.slice(-1).toUpperCase() : '';
+          clearMarks(cell);
+          if (v) stepNext(1);
+        });
+        inp.addEventListener('keydown', e => {
+          if (e.key === 'Backspace' && !e.target.value) {
+            e.preventDefault(); stepNext(-1);
+            const prev = inputAt(curR, curC);
+            if (prev) { prev.value = ''; clearMarks(prev.parentElement); }
+          } else if (e.key === 'ArrowRight') { e.preventDefault(); curDir = 'across'; stepNext(1); }
+          else if (e.key === 'ArrowLeft')  { e.preventDefault(); curDir = 'across'; stepNext(-1); }
+          else if (e.key === 'ArrowDown')  { e.preventDefault(); curDir = 'down';   stepNext(1); }
+          else if (e.key === 'ArrowUp')    { e.preventDefault(); curDir = 'down';   stepNext(-1); }
+        });
+        cell.addEventListener('click', () => selectCell(r, c, true));
+        cell.appendChild(inp);
+        board.appendChild(cell);
+      }
+    }
+    highlightWord();
+  }
+
+  function highlightWord() {
+    const data = matrix[curR] && matrix[curR][curC];
+    if (!data) return;
+    if (!data[curDir]) curDir = data.across ? 'across' : 'down';
+    const active = data[curDir];
+
+    document.querySelectorAll('.cw-cell').forEach(c => c.classList.remove('is-word', 'is-active'));
+    document.querySelectorAll('#across-clues-list li, #down-clues-list li').forEach(li =>
+      li.classList.remove('bg-purple-100/70', 'text-roseWood', 'font-semibold'));
+
+    const textEl = document.getElementById('active-clue-text');
+    const badgeEl = document.getElementById('active-dir-badge');
+    if (textEl) textEl.textContent = active.num + '. ' + active.clue;
+    if (badgeEl) badgeEl.textContent = active.dir.toUpperCase();
+    const li = document.getElementById('clue-' + active.num + '-' + active.dir);
+    if (li) li.classList.add('bg-purple-100/70', 'text-roseWood', 'font-semibold');
+
+    for (let i = 0; i < active.answer.length; i++) {
+      const r = active.dir === 'across' ? active.row : active.row + i;
+      const c = active.dir === 'across' ? active.col + i : active.col;
+      const inp = inputAt(r, c);
+      if (inp) inp.parentElement.classList.add('is-word');
+    }
+    const cur = inputAt(curR, curC);
+    if (cur) cur.parentElement.classList.add('is-active');
+  }
+
+  window.checkCrossword = function() {
+    let correct = 0, total = 0;
+    document.querySelectorAll('.cw-cell input').forEach(inp => {
+      total++;
+      const val = inp.value.trim().toUpperCase();
+      const cell = inp.parentElement;
+      clearMarks(cell);
+      if (val === inp.dataset.answer) { correct++; cell.classList.add('is-correct'); }
+      else if (val) cell.classList.add('is-wrong');
+    });
+    const banner = document.getElementById('crossword-success-banner');
+    if (!banner) return;
+    if (correct === total && total > 0) {
+      banner.classList.remove('hidden');
+      banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else { banner.classList.add('hidden'); }
+  };
+
+  window.revealCrossword = function() {
+    document.querySelectorAll('.cw-cell input').forEach(inp => {
+      inp.value = inp.dataset.answer;
+      clearMarks(inp.parentElement);
+      inp.parentElement.classList.add('is-correct');
+    });
+    const banner = document.getElementById('crossword-success-banner');
+    if (banner) banner.classList.remove('hidden');
+  };
+
+  renderPuzzle();
+})();
+</script></section>
+<!-- ============================================== -->
+<!-- SECTION 3: SONGS THAT REMIND ME OF YOU         -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6 hidden" id="section-songs">
+<div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-5 sm:p-7 md:p-8">
+<div class="washi-tape absolute -top-3 left-8 sm:left-10 w-28 h-6 rotate-2 z-10 border border-purple-200/50"></div>
+<div class="washi-tape absolute -top-3 right-8 sm:right-10 w-28 h-6 -rotate-2 z-10 border border-purple-200/50"></div>
+<div class="border-b border-purple-100 pb-4 mb-6">
+<span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 03</span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">Songs That Remind Me of You</h2>
+<p class="font-hand text-2xl text-sepia mt-1">Our shared soundtrack and lyric memories. Click any photo to enlarge.</p>
+</div>
+<!-- Scattered Polaroid Gallery - 1 col mobile, 2 cols tablet (md), 3 cols desktop (lg) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
+<!-- Card 1: Laufey - From The Start -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform -rotate-1 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuDU89TUXlFM8TXY8EnWjbFsNdwB0vogjyLRc_Zl_8NNfpLB-1hzGJ5YNzc1Wyadje-g7KoiLlzMbZ-OcAvHXFojvQQEbNKD7VZaOEs1pPbJC0733N2ukVJfK2jJNX6NCINAEHtNJGO71RbOKOh-0a5txUl9L-xAx_2Q7j-JEHTyQN8exsEw31VPVZC_e0eBZq4PKK0ajb87PufSx6UPu2-OkMktHI5gDE7_6JMPnJtsnYhYFbqjJUmokw', 'From The Start — Laufey', 'Cupid walks right through and shoots an arrow through my heart.')">
+<div class="washi-tape absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 rotate-1 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="From The Start - Laufey" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZrzPsPH3ReNpzPc2h_BipvYif5XfgH6GA_w-FkqYcq_QCtTHHmiyDNA5hMD-fdy3_sgEZlNmY7EcD1Wg2sEyt3iYIZVuAOqK6ZYWTmBxbGyUPvi__O4zTdq4isCI0tbcc9nrtX-xgWsgtla64z6jAcQkCiQMSFhxtm0KtvgtlsXqkJMwe3_bLhQnsY52deIGYy56fxo5GPrSucwih6Depw3rcrJRcRaVwgdANP7R0z41VVgw46sa0EQ">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">From The Start</p>
+<p class="text-xs text-pencil">Laufey</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"That feeling from the very beginning..."</p>
+</div>
+</div>
+<!-- Card 2: beabadoobee - Apple Cider -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform rotate-1.5 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuDPULDmsF80ZlTouTtduTKRGM5owrktvndWD-CwzYeG918pLQ2w90ex1_sxvBoYl6SQlYXK9DYJHyD9iaFjxVPlkJD6zI9TMvwSsq3UvoB7rRA1wQAz8aGRYO3vCUj4pSwEpj3FrKnGF9kGaCO3X6xLUZ4J9198P7WSSWmm4FVeZvBDr_iBe39l-CgMN6m2Nlq4BFV1AUJos64F6kWfvPe5FbBoAEA3corlmYU-LOsrJNVaGG5vHefC8A', 'Apple Cider — beabadoobee', 'It\'s really nice to talk to you, it\'s really nice to hold your hand.')">
+<div class="washi-tape absolute -top-2.5 left-1/3 -translate-x-1/2 w-16 h-5 -rotate-2 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Apple Cider - beabadoobee" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2WYhK1PihLRl5P9CTI254X_rNlgQqFCZsxutWeaqXS_tVZxgA2f4gQZ6nun2ld90a47c1RuVdGRrAcvLtH72y8YbMF2NigmOupAPd3UTJmZE14YEw9eODSOIJKUENnE0mxk6ob0DJREwbdoUrfU1t90zsuNSZvJ_MfbH8at1uGn0nr6gCgLSHvZjeXxN2PQ8zu6a3V1CrqKOcX2gcCjgl9ofKRbStE9oGJgFWtuVOhSjFCmQIW_EmOQ">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Apple Cider</p>
+<p class="text-xs text-pencil">beabadoobee</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"Just holding your hand and talking forever."</p>
+</div>
+</div>
+<!-- Card 3: Eyedress, Dent May - Something About You -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform -rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuBPpx5duqoGF_oM0PWLKOtdmDm5GNwwUbwmdXezSEsIvO6_ajA1vPRNAxF471SGz1xU2IPBIWENYvQJVsaajDmPfhwKvvvD6GwsZvsHbDITXuMHK-O0Nm_YwHH6DJBxJI9AbKHcoRGS_jXtkXTCfOv0fXtqt54cdJdIg3Rp9T21AYlc4hvwXa_X2E573SdjqDVATeFP9y0DZceX4FVasMPDQ1-MlNoATx4wlInu4babM8lcI-GKFw_q1w', 'Something About You — Eyedress, Dent May', 'She looks just like a dream, the prettiest girl I\'ve ever seen.')">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 rotate-3 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Something About You - Eyedress" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKpuUHQ60sNxhHxi2dHRMJDfZAY91z-Hq5XY7rfVYxocM5tn3yww-tE-TrFSu8O0J9Qr6lxFjN6D4qi-5iQW4z4egkJ5AB5RD1X30H6Ak29tPmc7h6Oh5jGwjplwaeduKQc4PHZkgleg6fTQeTuatos5y6erMAu8zhJaZAla_Lbf8I3NxoMx3gT_xEHS2jAM7lSOMo00n7UF_ZopszUzhfGbNdMTUEnkEwg-0IlasJWmnS27M5606Wxw">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Something About You</p>
+<p class="text-xs text-pencil">Eyedress, Dent May</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"The prettiest girl I have ever seen."</p>
+</div>
+</div>
+<!-- Card 4: Beach Bunny - Cloud 9 -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuBEAlUaDkG4zqjpqaDSjDOTw874m9hYjbp88Y3Bgw2cmRQBSAbguwd36UznSSO2HgZRAoGdLmPxgcynszB3i0f9rFMYqiXUWju7qeniOEj6cqaErVb9YK0aT-SOBNHaHUPO-XM-aRBdcJe4d2itHI4Fc0OQOyLj483GNpJzb_PDSew8dFOXAujuZPcgIR3Lm0jku1V_GbBcO7pcDYenbXxvYtBNSRj0FDhP9jiDO5S0j3tvXFZ3Hh-vXw', 'Cloud 9 — Beach Bunny', 'When he loves me, I feel like I\'m floating.')">
+<div class="washi-tape absolute -top-2.5 left-8 w-16 h-5 -rotate-1 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Cloud 9 - Beach Bunny" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFCTS5y7oTOsh_OsRyMzDted50ZlB8EWZbTvUNeXhM-K50I4N9AVY-0tSZb6s7zWy3FnynbpGAjWSgBn960hvGkl-AcNCH8QOLi5sd3ombii80bj85IhVUYjGQuhCkv0wZmNRSNtwZ4dz8Z3I-bLjd4ClRyUEUC10nhG9SsInUMoetE9gFqxVFHvkKqeq8-NcpjmlqjBgmXN366DW9HGDMMzCujv1INbxqV7IAQkdHO_CLQY4BifNlHA">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Cloud 9</p>
+<p class="text-xs text-pencil">Beach Bunny</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"Pure joy and butterflies every single time."</p>
+</div>
+</div>
+<!-- Card 5: sombr - do i ever cross your mind -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform -rotate-1.5 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuABG1Tu5R1-uEZQ97_0it8Xgm5BRrK5dUX7itUvcFWv8Sxf2C0tXErY7tuv2OLKIz0jdBE_NLOz-_2cs8d_JOFK99Pbt8ixO8B4fBq2peScWam-gTSlVNavkvEhCqJdkj2TLs66egnIIVLlRTzQsecWfizrItXG93h6rT7ZvgSFzL-gpyw2bazm6BSkoJeSPy4VHFASXip6prYKhjqKk57c9VmknR6gABqomzt4zYchKXQ1DJHkwFgRPA', 'do i ever cross your mind — sombr', 'I have a photo of you in my bed... I can feel you breathing down my neck.')">
+<div class="washi-tape absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 rotate-2 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="do i ever cross your mind - sombr" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBptBv8iErmgbwybOnHqZy90U65-XuuKRmRzv6OaSRePUjZsH9xYQDqLPT3DvEnXJ7zK-KrLuZABDYXhIiGGHYn4m5yytg9jm_MC74g8gZE5XFwabf8A8RiBL-JTh1xVPj4yjc2TyUMpf-MPCIXWPB_vvgKkml71utWuqSHMdasl7_GYOkHAQ2eMfCWeXz5-gXQ-gA8JhlkXdQ1b_3-TWCrlLOtjpUhBSPmN8_m4vtOpXgZOCMqCUft9A">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">do i ever cross your mind</p>
+<p class="text-xs text-pencil">sombr</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"Especially during these long-distance months."</p>
+</div>
+</div>
+<!-- Card 6: TV Girl - Blue Hair -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform rotate-1 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuCunlBQgdVWHH6S6aZEpGVY03wfNcgFPbn-2Ld-loDYMcf27zgWkyAwX4lcXpAYd94pkMfkAoSR0ySfKUZWsUNlRARshMFhd_FsISCr9adhgKd3WzJKTe0DjRnnaMjFuzOxTdr-B_qrHkiK3mw-M6GUFlsvIJJkU0kovzo_NXMxT770huTmzzVLpc5Nfhyi527Sbenjf-aJrRKokBu7YGz9cAfcrra1eDkAUtZs7KTdg0mXAMN96XDG5Q', 'Blue Hair — TV Girl', 'And I guess I\'ll just miss her, even though she isn\'t even really gone.')">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 -rotate-2 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Blue Hair - TV Girl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtFEUY5s4BSoWtSd_9DAR8fwiNTvEffSgkwq78XEPx_iY2Jk3W3KSg-khONDQlkH-XXQKnW0_x-HCf2falQqLlcFl0c_cvO_WVFNV43G9Jnhd-D3LQMFIQtOAoXRahQX5TRDBdiwFSv7hZMgsH6R4fjBLPjKcKAMLHK-SByXLSAnS-ZjiUYM2vwY_1JDFeEtjm75d84wDgJQwYjFs67zES0YU73o8G2E32c4PBysCKR1H8cif_5tVL0w">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Blue Hair</p>
+<p class="text-xs text-pencil">TV Girl</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"Missing you even right after hanging up."</p>
+</div>
+</div>
+<!-- Card 7: girl in red - we fell in love in october -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform -rotate-2 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuCSolMm2hKuofDQstaV5Te5JFfRuTMIchy9nVzzszUY07BYPg4i1wQ6-uMIDlu-dVo-ImmNNWolNNVd4o8mU0cq-_AZWDC6Z_Slngw3Nm8Y5M9bGd-vYOLqZts-Vcj-54-b0TxdfUrYAwwVM9p9UdDmc1uF01FfN1bBMz4T7jf89vsaw8wzkFv5o1gGz2pQQGhxxtCisPXmSviVllycAxilMoFsk9nda-ibEPrT2UpNB6JUvtjWbSBL_g', 'we fell in love in october — girl in red', 'You will be my girl, you will be my world.')">
+<div class="washi-tape absolute -top-2.5 left-10 w-16 h-5 rotate-1 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="we fell in love in october - girl in red" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVeEP0exOdTfkQ2YVhQLCko2YT1V5WqoXlS_mCNGh1-DyTbddlRFYB5chSPW10qv6FoRlmcjJk95BwdEM7kWzGZuiN0i9CYMpWBSBfAbp52ErEONQzVAHui9soDu8wKNzz9xsCc3TbH0t1Xg5cUZk1jfpx4-7A4ezFwl1oF5Ss7p9RUJxbxcONHFFqb9Tysirtw99vYXPq_KlFD28ZIgjY3sG4Z1H8OpRqJN2fgZJnfBFmhQ0rvtSTaw">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">we fell in love in october</p>
+<p class="text-xs text-pencil">girl in red</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"Our anniversary month right now in October."</p>
+</div>
+</div>
+<!-- Card 8: Rema - Reason You -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform rotate-1.5 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuBaDLMGgNn0cJB25tEeG0SYGB5ucXZ4oNyK2sQ3vN90Rtjaps7fGfCA-TFQ1VEplOc-_2n5b23HxcfXdYRoOmdOZCYnZ5W9OVF3-t0JiRGe5gjyb6NWVxbRQdg0ZZ1Qp6LGpasuTXJFPuMU4gRuSRPtacX5el9RCzFYmM-66Vg99WpuV2KWfxou5xccNFhrn6BJZHOFu-Mdjlon_aOX6Eeu2ou0VOPKzv_TXlYt0skQEUcqjRwchiIU2w', 'Reason You — Rema', 'Melanin shinin\', I love that dress and the person in it.')">
+<div class="washi-tape absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 -rotate-3 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Reason You - Rema" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIBxtpKgesAg3IryAM5srpjpLhcI0VEi1B9Eb6sUXr4dhIivzA8BJr8wS8vZmvh4Pi-Oa63ugoOT50iVob7w6Tq-2g_2SPAsuqJ94j9LAU8Nk3Y7_Y2cRe5nyp727YXAtKnvf421Z28kW28trcY8rd91wOeOhDOn-0NQBTm28lSG-uty23DwZizbjF93D1dQvjNeT4WWWRj9o83BncYcenAttKxZSgx0VVzlL9XXBnIN6iqk-1UdDnRA">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Reason You</p>
+<p class="text-xs text-pencil">Rema</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"That lethal face card and unmatched fashion."</p>
+</div>
+</div>
+<!-- Card 9: Michael Jackson - Heaven Can Wait -->
+<div class="polaroid-card group bg-[#FCFBFD] p-3.5 rounded-lg shadow-polaroid border border-purple-100 transform -rotate-1 hover:rotate-0 hover:scale-[1.02] transition-all duration-300 cursor-pointer" onclick="openLightbox('https://lh3.googleusercontent.com/aida-public/AB6AXuD_JYoItaRvsm995DgJxFjB_Wt5UY50RKt-WSdSGjLLtzMYGdmq7guDrKvXgQBpGqdQwq85ydk19VuCJEtwOBelWtnD2wC3cEniSFPPcMM2XzVmLiCMtLm3I4tMaTNWs1D90myiOiPSKhuPE_SvVkdtORixNQhg9iUzWAW-9lvLrD58wqIvZIROjSq7rfnOD76iO-IOVpVECqxTTvEkZ1xs3gjukhjPlDBzwkK68bIsPzyE9ZtWv1Ft-g', 'Heaven Can Wait — Michael Jackson', 'Tell the angels no, I don\'t wanna leave my baby alone.')">
+<div class="washi-tape absolute -top-2.5 right-8 w-16 h-5 rotate-2 z-10"></div>
+<div class="aspect-square w-full rounded overflow-hidden bg-stone-900 border border-purple-50">
+<img alt="Heaven Can Wait - Michael Jackson" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWTrp50uRYxN1K4gqasXAN3qORU6zkHKq_DXE4R6lS7RbqTtiK12pYNrqc2Y9Cf3fpHvyWEScFQtg1Nm4ZAAwk_LcspBLSoV1bCMmZK13pcWAT9lZYXRYF6FSmbZXp8WP2VXyqGGHtbxrkZAjDkOOmCz0GyQx7_PkqkKYUaMJd1JCUyBqYB5dEJMAkaNqnWJi3tdBegTF3q47z-__hL5NIOuCsovdluGKd8OXH0o9cOzPDgBW7FSNvfA">
+</div>
+<div class="pt-3 px-1">
+<p class="font-serif font-bold text-sm text-ink">Heaven Can Wait</p>
+<p class="text-xs text-pencil">Michael Jackson</p>
+<p class="font-hand text-base text-roseWood mt-2 leading-tight">"I don't want nobody else to hold you."</p>
+</div>
+</div>
+</div>
+<div class="mt-8 flex justify-between items-center border-t border-purple-100 pt-4">
+<button class="text-xs sm:text-sm font-medium text-pencil hover:text-ink" onclick="goToSection('crossword')">
+            ← Back to Crossword
+          </button>
+<button class="inline-flex items-center gap-2 px-5 py-2.5 bg-craftDark/80 hover:bg-craftDark text-ink rounded-xl font-medium transition text-sm" onclick="goToSection('things')">
+<span class="">Next: Things I Love About You</span>
+<span class="font-serif">→</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 4: THINGS I LOVE ABOUT YOU             -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6 hidden" id="section-things">
+<div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-5 sm:p-7 md:p-8">
+<div class="washi-tape absolute -top-3 left-12 w-28 h-6 -rotate-2 z-10 border border-purple-200/50"></div>
+<div class="border-b border-purple-100 pb-4 mb-6">
+<span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 04</span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">Things I Love About You</h2>
+<p class="font-hand text-2xl text-sepia mt-1">11 physical notes pinned to our scrapbook.</p>
+</div>
+<!-- 11 Varied Scrapbook Sticky Notes: Beautiful 2-col tablet layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+<!-- 1. Empathy -->
+<div class="relative bg-[#FAF5FD] p-5 rounded-lg shadow-sm border border-purple-200/80 transform -rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 rotate-1"></div>
+<span class="font-serif text-xs font-bold text-roseWood tracking-widest uppercase block mb-1">01. Your Empathy</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your empathy</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "You have a deep connection to your emotions that makes me view life from a different perspective."
+            </p>
+</div>
+<!-- 2. Humour -->
+<div class="relative bg-[#F4F6FD] p-5 rounded-lg shadow-sm border border-blue-200/70 transform rotate-1.5 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-6 w-16 h-5 -rotate-2 bg-blue-100/80"></div>
+<span class="font-serif text-xs font-bold text-indigo-700 tracking-widest uppercase block mb-1">02. Your Humour</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your humour</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "You're just really funny 😭"
+            </p>
+</div>
+<!-- 3. Open-mindedness -->
+<div class="relative bg-[#FBF7FD] p-5 rounded-lg shadow-sm border border-purple-200 transform -rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-1/2 -translate-x-1/2 w-16 h-5 rotate-2"></div>
+<span class="font-serif text-xs font-bold text-sepia tracking-widest uppercase block mb-1">03. Your Open-Mindedness</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your open-mindedness</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "There's something about the ability to learn, relearn and unlearn that is extremely attractive."
+            </p>
+</div>
+<!-- 4. You as a whole (Highlighted Large Card) -->
+<div class="md:col-span-2 relative bg-[#F7F0FB] p-6 sm:p-7 rounded-xl shadow-md border-2 border-purple-200/90 transform rotate-0.5 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-3 left-10 w-24 h-6 -rotate-1 bg-purple-200/70"></div>
+<div class="washi-tape absolute -top-3 right-10 w-24 h-6 rotate-2 bg-purple-200/70"></div>
+<span class="font-serif text-xs font-bold text-roseWood tracking-widest uppercase block mb-1">04. The Complete Package</span>
+<h3 class="font-serif font-bold text-2xl text-roseWood mb-2">I love you as a whole</h3>
+<p class="font-hand text-2xl sm:text-3xl text-stone-800 leading-relaxed">
+              "From your lethal face card to your undoubtedly sexy body, to your luscious lips, to your charisma and your entire being, there is just no beating that you're perfect."
+            </p>
+</div>
+<!-- 5. Voice -->
+<div class="relative bg-[#F3F9F5] p-5 rounded-lg shadow-sm border border-emerald-200 transform -rotate-1.5 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 -rotate-1 bg-emerald-100/70"></div>
+<span class="font-serif text-xs font-bold text-emerald-800 tracking-widest uppercase block mb-1">05. Your Voice</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your voice</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "A voice that brings me calm regardless of what the situation is is something I won't take for granted. That's explanatory."
+            </p>
+</div>
+<!-- 6. Eyes -->
+<div class="relative bg-[#FAF6FC] p-5 rounded-lg shadow-sm border border-purple-200 transform rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-8 w-16 h-5 rotate-2"></div>
+<span class="font-serif text-xs font-bold text-purple-900 tracking-widest uppercase block mb-1">06. Your Eyes</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your eyes</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "As they said about the eyes, 'The eyes never lie.' I look into your eyes and see the woman I am absolutely in love with and I know I'm in the right place."
+            </p>
+</div>
+<!-- 7. Lips -->
+<div class="relative bg-[#FDF5F9] p-5 rounded-lg shadow-sm border border-rose-200/80 transform -rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-1/3 w-16 h-5 -rotate-2 bg-pink-100/80"></div>
+<span class="font-serif text-xs font-bold text-rose-800 tracking-widest uppercase block mb-1">07. Your Lips</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your lips</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "I really really really enjoy kissing 😔"
+            </p>
+</div>
+<!-- 8. Existence -->
+<div class="relative bg-[#FAF4FB] p-5 rounded-lg shadow-sm border border-purple-200 transform rotate-1.5 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 rotate-1"></div>
+<span class="font-serif text-xs font-bold text-sepia tracking-widest uppercase block mb-1">08. Your Existence</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your existence</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "Grateful to your parents for bringing you into the world. You're the definition of my person if I had one (I have one and it is you)."
+            </p>
+</div>
+<!-- 9. Fashion Sense -->
+<div class="relative bg-[#F7F4FD] p-5 rounded-lg shadow-sm border border-purple-200 transform -rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-6 w-16 h-5 -rotate-1 bg-purple-100/70"></div>
+<span class="font-serif text-xs font-bold text-purple-900 tracking-widest uppercase block mb-1">09. Your Fashion Sense</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your fashion sense</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "You are unmistakably good looking and pair that with your sense of fashion, it makes heads turn and jaws drop."
+            </p>
+</div>
+<!-- 10. Attitude -->
+<div class="relative bg-[#FAF5FD] p-5 rounded-lg shadow-sm border border-purple-200 transform rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 right-8 w-16 h-5 rotate-2"></div>
+<span class="font-serif text-xs font-bold text-sepia tracking-widest uppercase block mb-1">10. Your Attitude</span>
+<h3 class="font-serif font-bold text-xl text-ink mb-2">I love your attitude</h3>
+<p class="font-hand text-2xl text-stone-800 leading-snug">
+              "I just love your attitude."
+            </p>
+</div>
+<!-- 11. Every Aspect (Final Note) -->
+<div class="md:col-span-2 relative bg-[#F6EEFA] p-6 rounded-xl shadow-sm border border-purple-200 text-center transform -rotate-0.5">
+<div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 rotate-1"></div>
+<span class="font-serif text-xs font-bold text-sepia tracking-widest uppercase block mb-1">11. Everything</span>
+<h3 class="font-serif font-bold text-2xl text-ink mb-2">I love every aspect of you</h3>
+<p class="font-hand text-3xl text-roseWood">
+              "Self explanatory."
+            </p>
+</div>
+</div>
+<div class="mt-8 flex justify-between items-center border-t border-purple-100 pt-4">
+<button class="text-xs sm:text-sm font-medium text-pencil hover:text-ink" onclick="goToSection('songs')">
+            ← Back to Songs
+          </button>
+<button class="inline-flex items-center gap-2 px-5 py-2.5 bg-craftDark/80 hover:bg-craftDark text-ink rounded-xl font-medium transition text-sm" onclick="goToSection('timeline')">
+<span class="">Next: Our Timeline</span>
+<span class="font-serif">→</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 5: OUR TIMELINE                        -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6 hidden" id="section-timeline">
+<div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-5 sm:p-7 md:p-8">
+<div class="washi-tape absolute -top-3 right-12 w-28 h-6 rotate-2 z-10 border border-purple-200/50"></div>
+<div class="border-b border-purple-100 pb-4 mb-8">
+<span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 05</span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">Our Timeline</h2>
+<p class="font-hand text-2xl text-sepia mt-1">Key milestones pinned to the scrapbook string.</p>
+</div>
+<!-- Vertical Timeline for mobile & tablet -->
+<div class="relative pl-6 sm:pl-10 space-y-8 before:content-[''] before:absolute before:left-2.5 sm:before:left-4 before:top-3 before:bottom-3 before:w-[2px] before:bg-purple-200 before:border-r before:border-dashed before:border-purple-300">
+<!-- Milestone 1 -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-paper border-2 border-purple-300 flex items-center justify-center text-xs shadow-sm">
+              📌
+            </div>
+<div class="bg-[#FCFAFE] p-4 sm:p-5 rounded-xl border border-purple-100 shadow-sm inline-block max-w-lg w-full transform -rotate-0.5 hover:rotate-0 transition">
+<span class="font-serif font-bold text-sm text-sepia uppercase tracking-wider block">November 29</span>
+<h3 class="font-serif font-bold text-xl text-ink mt-0.5">First time we texted</h3>
+<p class="font-hand text-xl text-pencil mt-1">"Where the conversation started and everything began."</p>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-paper border-2 border-purple-300 flex items-center justify-center text-xs shadow-sm">
+              🎁
+            </div>
+<div class="bg-[#FCFAFE] p-4 sm:p-5 rounded-xl border border-purple-100 shadow-sm inline-block max-w-lg w-full transform rotate-1 hover:rotate-0 transition">
+<span class="font-serif font-bold text-sm text-sepia uppercase tracking-wider block">February 14</span>
+<h3 class="font-serif font-bold text-xl text-ink mt-0.5">First gift I gave you</h3>
+<p class="font-hand text-xl text-pencil mt-1">"Valentine's Day reminder of how much you mean to me."</p>
+</div>
+</div>
+<!-- Milestone 3: First Kiss (Major Emphasis) -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-roseWood text-white flex items-center justify-center text-xs shadow-md">
+              💜
+            </div>
+<div class="bg-[#F9F3FD] p-5 sm:p-6 rounded-xl border-2 border-purple-200 shadow-md inline-block max-w-lg w-full transform -rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 right-6 w-16 h-5 rotate-2 bg-purple-200/70"></div>
+<div class="flex items-center gap-2">
+<span class="font-serif font-bold text-sm text-roseWood uppercase tracking-wider block">February 21</span>
+<span class="bg-purple-100 text-roseWood text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Core Memory</span>
+</div>
+<h3 class="font-serif font-bold text-2xl text-roseWood mt-1">First kiss</h3>
+<p class="font-hand text-2xl text-stone-800 mt-1">"A moment frozen in time that changed everything."</p>
+</div>
+</div>
+<!-- Milestone 4: First formal hangout (Date intentionally left blank) -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-paper border-2 border-purple-300 flex items-center justify-center text-xs shadow-sm">
+              ✨
+            </div>
+<div class="bg-[#FAF7FC] p-4 sm:p-5 rounded-xl border border-dashed border-purple-200 shadow-sm inline-block max-w-lg w-full transform rotate-0.5 hover:rotate-0 transition">
+<span class="font-serif font-semibold text-xs text-purple-400 uppercase tracking-wider block">Date intentionally left blank... for now.</span>
+<h3 class="font-serif font-bold text-xl text-ink mt-0.5">First formal hangout</h3>
+<p class="font-hand text-xl text-pencil mt-1">"We still have to debate and agree on the exact official date!"</p>
+</div>
+</div>
+<!-- Milestone 5: Officially dating (Major Milestone) -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-roseWood text-white flex items-center justify-center text-xs shadow-md">
+              💍
+            </div>
+<div class="bg-[#F8F1FC] p-5 sm:p-6 rounded-xl border-2 border-purple-300 shadow-md inline-block max-w-lg w-full transform rotate-1 hover:rotate-0 transition">
+<div class="washi-tape absolute -top-2.5 left-6 w-20 h-5 -rotate-1 bg-purple-200/80"></div>
+<div class="flex items-center gap-2">
+<span class="font-serif font-bold text-sm text-sepia uppercase tracking-wider block">April 7</span>
+<span class="bg-purple-100 text-roseWood text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">Official Start</span>
+</div>
+<h3 class="font-serif font-bold text-2xl text-ink mt-1">Officially dating</h3>
+<p class="font-hand text-2xl text-stone-800 mt-1">"The day we made it real. 6 months ago today."</p>
+</div>
+</div>
+<!-- Milestone 6: July 1 -->
+<div class="relative group">
+<div class="absolute -left-[27px] sm:-left-[35px] top-1.5 w-6 h-6 rounded-full bg-paper border-2 border-purple-300 flex items-center justify-center text-xs shadow-sm">
+              🌟
+            </div>
+<div class="bg-[#FCFAFE] p-4 sm:p-5 rounded-xl border border-purple-100 shadow-sm inline-block max-w-lg w-full transform -rotate-0.5 hover:rotate-0 transition">
+<span class="font-serif font-bold text-sm text-sepia uppercase tracking-wider block">July 1</span>
+<h3 class="font-serif font-bold text-xl text-ink mt-0.5">First time</h3>
+<p class="font-hand text-xl text-pencil mt-1">"A deeply special milestone in our journey."</p>
+</div>
+</div>
+</div>
+<div class="mt-10 flex justify-between items-center border-t border-purple-100 pt-4">
+<button class="text-xs sm:text-sm font-medium text-pencil hover:text-ink" onclick="goToSection('things')">
+            ← Back to Things I Love
+          </button>
+<button class="inline-flex items-center gap-2 px-5 py-2.5 bg-craftDark/80 hover:bg-craftDark text-ink rounded-xl font-medium transition text-sm" onclick="goToSection('envelopes')">
+<span class="">Next: Open When... Envelopes</span>
+<span class="font-serif">→</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- SECTION 6: OPEN WHEN...                        -->
+<!-- ============================================== -->
+<section class="scrapbook-page space-y-6 hidden" id="section-envelopes">
+<div class="relative bg-paper rounded-2xl shadow-paper border border-purple-100 p-5 sm:p-7 md:p-8">
+<div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-36 h-6 -rotate-1 z-10 border border-purple-200/50"></div>
+<div class="border-b border-purple-100 pb-4 mb-8">
+<span class="text-xs uppercase tracking-widest text-roseWood font-semibold block">Section 06</span>
+<h2 class="font-serif text-3xl sm:text-4xl font-bold text-ink">Open When...</h2>
+<p class="font-hand text-2xl text-sepia mt-1">Six envelopes for different moments. Tap to open and reveal the note inside.</p>
+</div>
+<!-- Interactive Envelope Grid: 1 col mobile, 2 cols tablet (md), 3 cols desktop (lg) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 pt-2">
+<!-- Envelope 1: Open when you miss me -->
+<div class="envelope-item bg-[#F8F2FB] border border-purple-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-200/80 pb-3 mb-3">
+<span class="text-xl">💌</span>
+<span class="text-[11px] font-mono uppercase text-sepia bg-paper px-2 py-0.5 rounded border border-purple-200">Tap to Open</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-ink">Open when you miss me</h3>
+<p class="text-xs text-pencil mt-0.5">Especially when the distance feels loud.</p>
+<!-- Hidden Note Content -->
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-4 rounded-xl shadow-inner font-hand text-xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">A personal message for you</p>
+<p class="leading-relaxed">
+                [Insert your personal message here: Remind her of your favorite memory, when you will see each other next, and that distance doesn't change a single thing about how you feel.]
+              </p>
+<span class="block text-right text-sepia font-reenie text-2xl mt-2">— Always yours 💜</span>
+</div>
+</div>
+<!-- Envelope 2: Open when you're having a bad day -->
+<div class="envelope-item bg-[#F8F2FB] border border-purple-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-200/80 pb-3 mb-3">
+<span class="text-xl">🌧️</span>
+<span class="text-[11px] font-mono uppercase text-sepia bg-paper px-2 py-0.5 rounded border border-purple-200">Tap to Open</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-ink">Open when you're having a bad day</h3>
+<p class="text-xs text-pencil mt-0.5">A comforting warm hug in words.</p>
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-4 rounded-xl shadow-inner font-hand text-xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">A comforting message</p>
+<p class="leading-relaxed">
+                [Insert your comforting message here: Take a deep breath. Remind her how resilient, capable, and loved she is, and that you're always here to listen whenever she needs.]
+              </p>
+<span class="block text-right text-sepia font-reenie text-2xl mt-2">— Take it easy today ✨</span>
+</div>
+</div>
+<!-- Envelope 3: Open when you need a reminder of how much I love you -->
+<div class="envelope-item bg-[#F8F2FB] border border-purple-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-200/80 pb-3 mb-3">
+<span class="text-xl">🕊️</span>
+<span class="text-[11px] font-mono uppercase text-sepia bg-paper px-2 py-0.5 rounded border border-purple-200">Tap to Open</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-ink">Open when you need a reminder of how much I love you</h3>
+<p class="text-xs text-pencil mt-0.5">When you need reassurance.</p>
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-4 rounded-xl shadow-inner font-hand text-xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">A romantic message</p>
+<p class="leading-relaxed">
+                [Insert your romantic message here: Reiterate that she is your favorite person in the world, that you choose her every day, and how proud you are to be her boyfriend.]
+              </p>
+<span class="block text-right text-sepia font-reenie text-2xl mt-2">— With all my heart 💜</span>
+</div>
+</div>
+<!-- Envelope 4: Open when you're angry at me -->
+<div class="envelope-item bg-[#F8F2FB] border border-purple-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-200/80 pb-3 mb-3">
+<span class="text-xl">🍵</span>
+<span class="text-[11px] font-mono uppercase text-sepia bg-paper px-2 py-0.5 rounded border border-purple-200">Tap to Open</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-ink">Open when you're angry at me</h3>
+<p class="text-xs text-pencil mt-0.5">A playful &amp; apologetic peace offering.</p>
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-4 rounded-xl shadow-inner font-hand text-xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">Playful &amp; apologetic note</p>
+<p class="leading-relaxed">
+                [Insert your playful/apologetic message here: Acknowledge whatever silly thing happened, apologize sincerely, offer to buy her favorite treat, and remind her you're on the same team.]
+              </p>
+<span class="block text-right text-sepia font-reenie text-2xl mt-2">— Still your #1 fan 🥺</span>
+</div>
+</div>
+<!-- Envelope 5: Open when you want to smile -->
+<div class="envelope-item bg-[#F8F2FB] border border-purple-200 p-5 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-200/80 pb-3 mb-3">
+<span class="text-xl">🧸</span>
+<span class="text-[11px] font-mono uppercase text-sepia bg-paper px-2 py-0.5 rounded border border-purple-200">Tap to Open</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-ink">Open when you want to smile</h3>
+<p class="text-xs text-pencil mt-0.5">Something funny or cute.</p>
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-4 rounded-xl shadow-inner font-hand text-xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">Funny or cute memory</p>
+<p class="leading-relaxed">
+                [Insert your cute inside joke, a funny photo or sudden realization here to make her burst out laughing like she always does.]
+              </p>
+<span class="block text-right text-sepia font-reenie text-2xl mt-2">— 😭💜</span>
+</div>
+</div>
+<!-- Envelope 6: Open when you reach the end of this scrapbook -->
+<div class="envelope-item bg-[#F3EBF7] border-2 border-purple-300 p-5 rounded-2xl shadow-md hover:shadow-lg transition cursor-pointer relative" onclick="toggleEnvelope(this)">
+<div class="flex items-center justify-between border-b border-purple-300/80 pb-3 mb-3">
+<span class="text-xl">📖</span>
+<span class="text-[11px] font-mono uppercase text-roseWood font-bold bg-white px-2 py-0.5 rounded border border-purple-200">Final Letter</span>
+</div>
+<h3 class="font-serif font-bold text-lg text-roseWood">Open when you reach the end</h3>
+<p class="text-xs text-pencil mt-0.5">The closing message for our 6-month gift.</p>
+<div class="envelope-content hidden mt-4 pt-3 border-t border-dashed border-purple-300 bg-white p-5 rounded-xl shadow-inner font-hand text-2xl text-stone-800 animate-fade-in">
+<p class="text-roseWood font-bold text-xs uppercase font-sans tracking-wider mb-1">Closing message</p>
+<p class="leading-relaxed">
+                [Insert your final closing message here: "Happy 6 months, my love. Here's to surviving the distance, growing together every single day, and making memories that will fill a hundred more scrapbooks. I love you."]
+              </p>
+<span class="block text-right text-roseWood font-reenie text-3xl mt-3">— Happy 6 Months, Baby 💜</span>
+</div>
+</div>
+</div>
+<div class="mt-10 flex justify-between items-center border-t border-purple-100 pt-4">
+<button class="text-xs sm:text-sm font-medium text-pencil hover:text-ink" onclick="goToSection('timeline')">
+            ← Back to Timeline
+          </button>
+<button class="inline-flex items-center gap-2 px-5 py-2.5 bg-roseWood hover:bg-lilacDark text-white rounded-xl font-medium transition text-sm shadow" onclick="goToSection('letter')">
+<span class="">Read Letter Again</span>
+<span class="font-serif">↻</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+<!-- ============================================== -->
+<!-- LIGHTBOX MODAL FOR POLAROIDS                   -->
+<!-- ============================================== -->
+<div class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4" id="lightbox" onclick="closeLightbox(event)">
+<div class="relative bg-paper rounded-2xl max-w-lg w-full p-4 sm:p-6 shadow-2xl border border-purple-200 transform scale-95 transition-transform" onclick="event.stopPropagation()">
+<button class="absolute top-3 right-3 text-pencil hover:text-ink bg-purple-100/70 hover:bg-purple-200 rounded-full w-8 h-8 flex items-center justify-center font-bold text-lg" onclick="closeLightbox(event)">
+        ✕
+      </button>
+<div class="washi-tape absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 rotate-1"></div>
+<div class="aspect-square w-full rounded-xl overflow-hidden bg-black mt-2">
+<img alt="Lyric Screenshot" class="w-full h-full object-contain" id="lightbox-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgcng9IjgiIGZpbGw9IiNlOGVhZWQiLz48cGF0aCBkPSJNMTcwIDEzMCBsMzAgNDAgbDIwLTE1IGw0MCA1NSBIMTQweiIgZmlsbD0iI2JkYzFjNiIvPjxjaXJjbGUgY3g9IjI1MCIgY3k9IjEyMCIgcj0iMTgiIGZpbGw9IiNiZGMxYzYiLz48L3N2Zz4=">
+</div>
+<div class="mt-4 text-center">
+<h3 class="font-serif font-bold text-xl text-ink" id="lightbox-title"></h3>
+<p class="font-hand text-2xl text-roseWood mt-1" id="lightbox-caption"></p>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- JAVASCRIPT APPLICATION LOGIC                   -->
+<!-- ============================================== -->
+<script>
+    // --- Navigation Logic ---
+    const sections = ['letter', 'crossword', 'songs', 'things', 'timeline', 'envelopes'];
+    let currentSection = 'letter';
+
+    document.getElementById('open-scrapbook-btn').addEventListener('click', () => {
+      const cover = document.getElementById('cover-screen');
+      cover.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => cover.style.display = 'none', 700);
+    });
+
+    function goToSection(sectionId) {
+      currentSection = sectionId;
+      sections.forEach(s => {
+        const el = document.getElementById(`section-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(`section-${sectionId}`);
+      if (target) {
+        target.classList.remove('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Update Nav Tabs
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        if (tab.getAttribute('data-nav') === sectionId) {
+          tab.classList.remove('bg-craft', 'text-pencil');
+          tab.classList.add('bg-roseWood', 'text-white', 'shadow-sm');
+        } else {
+          tab.classList.remove('bg-roseWood', 'text-white', 'shadow-sm');
+          tab.classList.add('bg-craft', 'text-pencil');
+        }
+      });
+
+      // Update Page Indicator
+      const index = sections.indexOf(sectionId) + 1;
+      document.getElementById('page-indicator').textContent = `Page ${index} of ${sections.length}`;
+    }
+
+    // --- Envelope Interaction ---
+    function toggleEnvelope(card) {
+      const content = card.querySelector('.envelope-content');
+      const badge = card.querySelector('.font-mono');
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        badge.textContent = 'Opened ✓';
+        badge.classList.add('text-roseWood', 'border-purple-300');
+      } else {
+        content.classList.add('hidden');
+        badge.textContent = 'Tap to Open';
+        badge.classList.remove('text-roseWood', 'border-purple-300');
+      }
+    }
+
+    // --- Lightbox Logic ---
+    function openLightbox(src, title, caption) {
+      const lb = document.getElementById('lightbox');
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-title').textContent = title;
+      document.getElementById('lightbox-caption').textContent = caption;
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+    }
+
+    function closeLightbox(e) {
+      const lb = document.getElementById('lightbox');
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+    }
+  </script>
+
+
+</body></html>
