@@ -73,6 +73,58 @@
     .washi-tape::before { left: -3px; }
     .washi-tape::after { right: -3px; }
 
+
+    /* ===== Opening cover screen ===== */
+    #cover-screen {
+      position: fixed; inset: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; overflow: hidden;
+      background: #F3EEE5;
+      transition: opacity .7s ease;
+    }
+    #cover-screen.is-hidden { opacity: 0; pointer-events: none; }
+    #cover-screen .cv-card {
+      position: relative; width: 100%; max-width: 380px;
+      background: #FBFAF7; border-radius: 14px;
+      padding: 44px 28px 28px; text-align: center;
+      transform: rotate(-1deg); transition: transform .3s ease;
+      box-shadow: 0 22px 44px -14px rgba(70,45,35,.30), 0 2px 6px rgba(0,0,0,.05);
+    }
+    #cover-screen .cv-card:hover { transform: rotate(0deg); }
+    #cover-screen .cv-tape {
+      position: absolute; top: -11px; left: 50%; width: 112px; height: 24px;
+      transform: translateX(-50%) rotate(.8deg);
+      background: rgba(240,228,208,.95); box-shadow: 0 1px 3px rgba(90,70,40,.12);
+    }
+    #cover-screen .cv-stamp { position: absolute; top: -14px; right: -14px; width: 64px; height: 64px; pointer-events: none; }
+    #cover-screen .cv-kicker {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      color: #3B3438; font-family: "Caveat", cursive; font-size: 20px; letter-spacing: .06em;
+    }
+    #cover-screen .cv-kicker svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+    #cover-screen .cv-title {
+      margin: 14px 0 0; font-family: "Playfair Display", serif; font-weight: 700;
+      font-size: clamp(34px, 9vw, 46px); line-height: 1.1; letter-spacing: -.01em; color: #1F1A1D;
+    }
+    #cover-screen .cv-sub { margin: 8px 0 0; font-family: "Caveat", cursive; font-size: 25px; color: #5A4A50; text-wrap: balance; }
+    @media (min-width: 420px) { #cover-screen .cv-sub { font-size: 28px; } }
+    #cover-screen .cv-dates {
+      margin: 14px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .13em;
+      text-transform: uppercase; color: #A29AA6;
+    }
+    #cover-screen .cv-btn {
+      width: 100%; margin-top: 28px; padding: 14px 20px; border: 0; cursor: pointer;
+      border-radius: 10px; background: #8B4547; color: #fff;
+      font: 500 15px "Plus Jakarta Sans", sans-serif;
+      box-shadow: 0 8px 18px -6px rgba(110,45,48,.55);
+      transition: background .2s ease, transform .1s ease;
+    }
+    #cover-screen .cv-btn:hover { background: #773A3C; }
+    #cover-screen .cv-btn:active { transform: scale(.97); }
+    #cover-screen .cv-btn span { display: inline-block; margin-left: 6px; transition: transform .2s ease; }
+    #cover-screen .cv-btn:hover span { transform: translateX(3px); }
+    #cover-screen .cv-foot { margin-top: 22px; font-family: "Caveat", cursive; font-size: 17px; color: #A29AA6; }
+
     /* Crossword board: cream card, dark outline, rounded tiles */
     .cw-board {
       container-type: inline-size;
@@ -178,50 +230,20 @@
 <!-- ============================================== -->
 <!-- OPENING COVER SCREEN                          -->
 <!-- ============================================== -->
-<div class="fixed inset-0 z-50 flex items-center justify-center bg-scrapbook p-4 sm:p-6 md:p-8 transition-all duration-700 opacity-0 pointer-events-none" id="cover-screen" style="display: none;">
-<div class="relative max-w-md w-full bg-paper rounded-2xl p-7 sm:p-10 shadow-2xl border border-purple-100 text-center transform hover:rotate-0 transition-transform -rotate-1">
-<!-- Decorative washi tape -->
-<div class="washi-tape absolute -top-3.5 left-1/2 -translate-x-1/2 w-32 h-7 rotate-1 z-10 border border-purple-200/60 opacity-90"></div>
-<!-- Ribbon / Stamp Corner -->
-<div class="absolute -top-3 -right-3 w-16 h-16 pointer-events-none">
-<svg class="w-full h-full text-roseWood/80 fill-current drop-shadow-sm" viewBox="0 0 100 100">
-<circle cx="50" cy="50" fill="#EFE8F6" r="40" stroke="#8B6B9E" stroke-dasharray="3 3" stroke-width="2"></circle>
-<text fill="#8B6B9E" font-family="'Caveat', cursive" font-size="18" font-weight="bold" text-anchor="middle" x="50" y="55">6 MOS</text>
-</svg>
-</div>
-<div class="py-5 sm:py-8 space-y-4">
-<!-- Little hand doodle -->
-<div class="text-roseWood flex justify-center items-center gap-2">
-<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
-<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-<span class="font-hand text-xl tracking-wider text-sepia">our story so far</span>
-<svg class="w-6 h-6 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
-<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"></path>
-</svg>
-</div>
-<h1 class="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-ink">
-          6 Months of Us
-        </h1>
-<p class="font-hand text-2xl sm:text-3xl text-sepia pt-1">
-          A little something I made for you.
-        </p>
-<p class="text-xs tracking-widest uppercase text-purple-400 font-semibold pt-2">
-          April 7, 2026 — October 6, 2026
-        </p>
-</div>
-<div class="pt-3 sm:pt-4">
-<button class="w-full group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-roseWood hover:bg-lilacDark rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform active:scale-95" id="open-scrapbook-btn">
-<span class="">Open our scrapbook</span>
-<span class="ml-2 font-serif transition-transform group-hover:translate-x-1">→</span>
-</button>
-</div>
-<div class="mt-6 text-purple-400 font-hand text-lg flex items-center justify-center gap-1.5">
-<span class="">Handcrafted with love</span>
-<span class="">•</span>
-<span class="">Made for your phone &amp; tablet</span>
-</div>
-</div>
+<div id="cover-screen">
+  <div class="cv-card">
+    <div class="cv-tape"></div>
+    <svg class="cv-stamp" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="42" fill="#EEE3DF" stroke="#C4A8A3" stroke-width="2" stroke-dasharray="3 3"/>
+      <text x="50" y="56" text-anchor="middle" font-family="'Caveat', cursive" font-size="20" font-weight="700" fill="#A5686A" transform="rotate(-6 50 50)">6 MOS</text>
+    </svg>
+    <div class="cv-kicker"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>our story so far</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h1 class="cv-title">6 Months of Us</h1>
+    <p class="cv-sub">A little something I made for you.</p>
+    <p class="cv-dates">April 7, 2026 — October 6, 2026</p>
+    <button id="open-scrapbook-btn" class="cv-btn" type="button">Open our scrapbook<span>→</span></button>
+    <p class="cv-foot">Handcrafted with love • Made for your phone</p>
+  </div>
 </div>
 <!-- ============================================== -->
 <!-- MAIN APP CONTAINER (Optimized for Mobile/Tablet) -->
@@ -1097,9 +1119,14 @@
     const sections = ['letter', 'crossword', 'songs', 'things', 'timeline', 'envelopes'];
     let currentSection = 'letter';
 
+    // --- Cover screen: opens into page 1 ---
+    document.body.style.overflow = 'hidden';
     document.getElementById('open-scrapbook-btn').addEventListener('click', () => {
       const cover = document.getElementById('cover-screen');
-      cover.classList.add('opacity-0', 'pointer-events-none');
+      cover.classList.add('is-hidden');
+      document.body.style.overflow = '';
+      goToSection('letter');
+      window.scrollTo(0, 0);
       setTimeout(() => cover.style.display = 'none', 700);
     });
 
@@ -1130,6 +1157,9 @@
       const index = sections.indexOf(sectionId) + 1;
       document.getElementById('page-indicator').textContent = `Page ${index} of ${sections.length}`;
     }
+
+    // Start on page 1 (behind the cover)
+    goToSection('letter');
 
     // --- Envelope Interaction ---
     function toggleEnvelope(card) {
